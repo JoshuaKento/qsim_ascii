@@ -1,8 +1,8 @@
 use num_complex::Complex64;
 
 pub struct QState {
-    pub nqubits: usize,
-    pub amps: Vec<Complex64>,
+    nqubits: usize,
+    amps: Vec<Complex64>,
 }
 
 impl QState {
@@ -20,5 +20,9 @@ impl QState {
     pub fn probabilities(&self) -> Vec<f64> {
         // return map a -> a.norm_spr for amps
         self.amps.iter().map(|a| a.norm_sqr()).collect()
+    }
+
+    pub(crate) fn get_amps(&mut self) -> &mut [Complex64] {
+        &mut self.amps
     }
 }
