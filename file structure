@@ -1,0 +1,20 @@
+qsim/
+├─ Cargo.toml            # workspace root
+├─ crates/
+│  ├─ qsim_core/
+│  │  ├─ Cargo.toml
+│  │  └─ src/
+│  │     ├─ lib.rs
+│  │     ├─ state.rs
+│  │     ├─ gates.rs
+│  │     ├─ circuit.rs
+│  │     └─ measure.rs
+│  └─ qsim_tui/
+│     ├─ Cargo.toml
+│     └─ src/
+│        ├─ main.rs
+│        ├─ render.rs    # ascii rendering functions
+│        └─ term.rs      # crossterm loop + input
+└─ examples/
+   ├─ bell.rs            # optional example circuits
+   └─ interference.rs

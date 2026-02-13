@@ -1,0 +1,11 @@
+[workspace]
+members = [
+  "crates/qsim_core",
+  "crates/qsim_tui",
+]
+resolver = "2"
+
+[workspace.dependencies]
+crossterm = "0.29.0"
+num-complex = "0.4.6"
+rand = "0.10.0"
