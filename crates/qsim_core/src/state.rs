@@ -25,4 +25,26 @@ impl QState {
     pub(crate) fn get_amps(&mut self) -> &mut [Complex64] {
         &mut self.amps
     }
+
+    pub fn amps(&self) -> &[Complex64] {
+        &self.amps
+    }
+
+    /// ToDo HIGH: Exception handling
+    pub fn is_entangled_two_qubit(&self) -> bool {
+        // assert: nqubits = 2
+        // assert: amps.len() = 4
+
+        let a00 = self.amps()[0];
+        let a01 = self.amps()[1];
+        let a10 = self.amps()[2];
+        let a11 = self.amps()[3];
+
+        // separable iff a00*a11 == a01*a10
+        let det = a00 * a11 - a01 * a10;
+
+        // floating tolerance
+        let eps = 1e-12;
+        det.norm_sqr() > eps * eps
+    }
 }

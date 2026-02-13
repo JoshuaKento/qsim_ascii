@@ -39,3 +39,18 @@ pub fn apply_h(state: &mut QState, target: usize) {
         }
     }
 }
+/// ToDo HIGH: bounds check for control, target
+pub fn apply_cnot(state: &mut QState, control: usize, target: usize) {
+    assert!(control != target);
+
+    let cbit = 1usize << control;
+    let tbit = 1usize << target;
+    let n = state.get_amps().len();
+
+    for i in 0..n {
+        if (cbit & i) != 0 && (tbit & i) == 0 {
+            let j = i ^ tbit;
+            state.get_amps().swap(i, j);
+        }
+    }
+}
