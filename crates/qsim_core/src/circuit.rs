@@ -12,15 +12,15 @@ pub enum Operation {
 
 // builder, constructer, runner
 pub struct Circuit {
-    nqubits: usize,
+    //nqubits: usize,
     ops: Vec<Operation>,
 }
 
 impl Circuit {
     // constructer
-    pub fn new(nqubits: usize) -> Self {
+    pub fn new(/*nqubits: usize*/) -> Self {
         Circuit {
-            nqubits,
+            //nqubits,
             ops: Vec::new(),
         }
     }

@@ -6,17 +6,6 @@ pub enum Command {
     Reset,
 }
 
-/*
-mplement Command and input mapping in crates/qsim_tui/src/term.rs:
-enum Command { Quit, ApplyH(usize), ApplyX(usize), MeasureAll, Reset }
-map:
-'q' -> Quit
-'h' -> ApplyH(0)
-'x' -> ApplyX(0)
-'m' -> MeasureAll
-'r' -> Reset
-anything else -> None
-*/
 pub fn map_input_to_command(key: char) -> Option<Command> {
     match key {
         'q' => Some(Command::Quit),

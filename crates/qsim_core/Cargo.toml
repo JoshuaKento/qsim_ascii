@@ -6,3 +6,11 @@ edition = "2024"
 [dependencies]
 num-complex = { workspace = true }
 rand = { workspace = true }
+
+[[example]]
+name = "bell"
+path = "examples/bell.rs"
+
+[[example]]
+name = "interference"
+path = "examples/interference.rs"

@@ -1,22 +1,22 @@
 use num_complex::Complex64;
 
 pub struct QState {
-    nqubits: usize,
+    nqbits: usize,
     amps: Vec<Complex64>,
 }
 
 impl QState {
     // initialize (build) QState
-    pub fn zero(nqubits: usize) -> Self {
+    pub fn zero(nqbits: usize) -> Self {
         // dimension = 2^n
-        let dim = 1usize << nqubits;
+        let dim = 1usize << nqbits;
 
         // fill amps with 0 + 0i
         let mut amps = vec![Complex64::new(0.0, 0.0); dim];
 
         // first index in amps will be 1 + 0i
         amps[0] = Complex64::new(1.0, 0.0);
-        return QState { nqubits, amps };
+        return QState { nqbits, amps };
     }
 
     /// return map a -> a.norm_spr for amps
@@ -34,14 +34,14 @@ impl QState {
         &self.amps
     }
 
-    pub fn get_nqubits(&self) -> usize {
-        self.nqubits
+    pub fn get_nqbits(&self) -> usize {
+        self.nqbits
     }
 
     ///
     /// ToDo HIGH: Exception handling
     pub fn is_entangled_two_qubit(&self) -> bool {
-        // assert: nqubits = 2
+        // assert: nqbits = 2
         // assert: amps.len() = 4
 
         let a00 = self.amps()[0];

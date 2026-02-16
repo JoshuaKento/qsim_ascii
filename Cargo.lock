@@ -325,6 +325,7 @@ version = "0.1.0"
 dependencies = [
  "crossterm",
  "qsim_core",
+ "rand",
 ]
 
 [[package]]

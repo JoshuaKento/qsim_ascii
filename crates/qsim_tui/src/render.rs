@@ -1,12 +1,6 @@
-/*
-Implement render_probabilities in crates/qsim_tui/src/render.rs:
-iterate state.probabilities()
-format rows like |0> 1.0000, |1> 0.0000
-return one multiline String
-*/
 pub fn render_probabilities(state: &qsim_core::state::QState) -> String {
     let probs = state.probabilities();
-    let n = state.get_nqubits();
+    let n = state.get_nqbits();
 
     probs
         .iter()
@@ -24,10 +18,6 @@ pub fn render_probabilities(state: &qsim_core::state::QState) -> String {
         .join("\n")
 }
 
-/*
-Implement render_help in crates/qsim_tui/src/render.rs:
-return a String containing at least [q] [h] [x] [m] [r]
-*/
 pub fn render_help() -> String {
     [
         "[q] quit",
@@ -36,5 +26,5 @@ pub fn render_help() -> String {
         "[m] MeasureAll",
         "[r] reset",
     ]
-    .join("")
+    .join("\n")
 }
