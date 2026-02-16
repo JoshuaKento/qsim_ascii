@@ -2,12 +2,18 @@ use std::f64::consts::SQRT_2;
 
 use crate::state::QState;
 
-/* ToDo HIGH : Target value validation
-High apply_x/apply_h can panic on invalid target(out-of-range bit index),
-because they compute j and index/swap without bounds checks. */
+fn assert_target_in_range(state: &QState, target: usize) {
+    assert!(
+        target < state.get_nqbits(),
+        "target qubit index out of range: target={target}, nqubits={}",
+        state.get_nqbits()
+    );
+}
 
 // Pauli-X flip
 pub fn apply_x(state: &mut QState, target: usize) {
+    assert_target_in_range(state, target);
+
     let bit = 1usize << target; // target's bit position
     let n = state.get_amps().len(); // dimension of n
 
@@ -22,6 +28,8 @@ pub fn apply_x(state: &mut QState, target: usize) {
 
 // Hadamard
 pub fn apply_h(state: &mut QState, target: usize) {
+    assert_target_in_range(state, target);
+
     let bit = 1usize << target; // target's bit position
     let n = state.get_amps().len(); // dimension of n
 
@@ -39,9 +47,11 @@ pub fn apply_h(state: &mut QState, target: usize) {
         }
     }
 }
-/// ToDo HIGH: bounds check for control, target
+
 pub fn apply_cnot(state: &mut QState, control: usize, target: usize) {
-    assert!(control != target);
+    assert_target_in_range(state, control);
+    assert_target_in_range(state, target);
+    assert!(control != target, "control and target must be different");
 
     let cbit = 1usize << control;
     let tbit = 1usize << target;

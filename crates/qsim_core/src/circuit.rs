@@ -3,51 +3,81 @@ use crate::{
     state::QState,
 };
 
-// for queing operation
+// For queuing operations.
 pub enum Operation {
     X(usize),
     H(usize),
     CNOT(usize, usize),
 }
 
-// builder, constructer, runner
+// Builder, constructor, runner.
 pub struct Circuit {
-    //nqubits: usize,
+    nqubits: usize,
     ops: Vec<Operation>,
 }
 
 impl Circuit {
-    // constructer
-    pub fn new(/*nqubits: usize*/) -> Self {
-        Circuit {
-            //nqubits,
+    // Constructor.
+    pub fn new(nqubits: usize) -> Self {
+        assert!(nqubits > 0, "circuit qubit width must be >= 1");
+        Self {
+            nqubits,
             ops: Vec::new(),
         }
     }
 
-    // builder for x
+    fn assert_target_in_range(&self, target: usize) {
+        assert!(
+            target < self.nqubits,
+            "target qubit index out of range: target={target}, nqubits={}",
+            self.nqubits
+        );
+    }
+
+    fn assert_control_target_in_range(&self, control: usize, target: usize) {
+        assert!(
+            control < self.nqubits,
+            "control qubit index out of range: control={control}, nqubits={}",
+            self.nqubits
+        );
+        assert!(
+            target < self.nqubits,
+            "target qubit index out of range: target={target}, nqubits={}",
+            self.nqubits
+        );
+        assert!(control != target, "control and target must be different");
+    }
+
+    // Builder for X.
     pub fn x(&mut self, target: usize) -> &mut Self {
+        self.assert_target_in_range(target);
         self.ops.push(Operation::X(target));
-
-        return self;
+        self
     }
 
-    // builder for h
+    // Builder for H.
     pub fn h(&mut self, target: usize) -> &mut Self {
+        self.assert_target_in_range(target);
         self.ops.push(Operation::H(target));
-
-        return self;
+        self
     }
 
-    // bilder for cnot
+    // Builder for CNOT.
     pub fn cnot(&mut self, control: usize, target: usize) -> &mut Self {
+        self.assert_control_target_in_range(control, target);
         self.ops.push(Operation::CNOT(control, target));
-        return self;
+        self
     }
 
-    // run
-    /// ToDo: HIGH validate state.nqubits == self.nqubits
+    // Run.
     pub fn run(&self, state: &mut QState) {
+        assert!(
+            state.get_nqbits() == self.nqubits,
+            "circuit/state width mismatch: circuit={}, state={}",
+            self.nqubits,
+            state.get_nqbits()
+        );
+
         for i in &self.ops {
             match *i {
                 Operation::H(t) => apply_h(state, t),

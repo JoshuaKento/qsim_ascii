@@ -6,4 +6,3 @@ edition = "2024"
 [dependencies]
 crossterm = { workspace = true }
 qsim_core = { path = "../qsim_core" }
-rand = { workspace = true }

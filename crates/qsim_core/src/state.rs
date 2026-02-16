@@ -6,30 +6,58 @@ pub struct QState {
 }
 
 impl QState {
-    // initialize (build) QState
+    // Initialize basis state |0...0>.
     pub fn zero(nqbits: usize) -> Self {
-        // dimension = 2^n
         let dim = 1usize << nqbits;
-
-        // fill amps with 0 + 0i
         let mut amps = vec![Complex64::new(0.0, 0.0); dim];
-
-        // first index in amps will be 1 + 0i
         amps[0] = Complex64::new(1.0, 0.0);
-        return QState { nqbits, amps };
+        QState { nqbits, amps }
     }
 
-    /// return map a -> a.norm_spr for amps
+    pub fn total_probability(&self) -> f64 {
+        self.amps.iter().map(|a| a.norm_sqr()).sum()
+    }
+
+    pub fn is_normalized(&self, eps: f64) -> bool {
+        (self.total_probability() - 1.0).abs() <= eps
+    }
+
+    pub fn normalize(&mut self) {
+        let total = self.total_probability();
+        assert!(
+            total.is_finite() && total > 0.0,
+            "cannot normalize state with non-positive total probability"
+        );
+        let scale = total.sqrt().recip();
+        for amp in &mut self.amps {
+            *amp *= scale;
+        }
+    }
+
+    pub fn validate(&self, eps: f64) -> Result<(), &'static str> {
+        if self.amps.len() != (1usize << self.nqbits) {
+            return Err("state dimension mismatch");
+        }
+        if !self.total_probability().is_finite() {
+            return Err("state has non-finite probability mass");
+        }
+        if !self.is_normalized(eps) {
+            return Err("state is not normalized");
+        }
+        Ok(())
+    }
+
+    /// Return basis probabilities p[k] = |a[k]|^2.
     pub fn probabilities(&self) -> Vec<f64> {
         self.amps.iter().map(|a| a.norm_sqr()).collect()
     }
 
-    /// get a mutable slice of amps
+    /// Get mutable amplitudes.
     pub(crate) fn get_amps(&mut self) -> &mut [Complex64] {
         &mut self.amps
     }
 
-    /// get a borrow slice of amps
+    /// Get immutable amplitudes.
     pub fn amps(&self) -> &[Complex64] {
         &self.amps
     }
@@ -38,21 +66,20 @@ impl QState {
         self.nqbits
     }
 
-    ///
-    /// ToDo HIGH: Exception handling
     pub fn is_entangled_two_qubit(&self) -> bool {
-        // assert: nqbits = 2
-        // assert: amps.len() = 4
+        assert!(
+            self.nqbits == 2 && self.amps.len() == 4,
+            "is_entangled_two_qubit requires a 2-qubit state"
+        );
 
         let a00 = self.amps()[0];
         let a01 = self.amps()[1];
         let a10 = self.amps()[2];
         let a11 = self.amps()[3];
 
-        // separable iff a00*a11 == a01*a10
+        // Separable iff a00*a11 == a01*a10.
         let det = a00 * a11 - a01 * a10;
 
-        // floating tolerance
         let eps = 1e-12;
         det.norm_sqr() > eps * eps
     }
